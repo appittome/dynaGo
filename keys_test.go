@@ -166,6 +166,6 @@ func createTables() {
 	}
 	fmt.Printf("CreateTable %s\n", TableName(KeysTestMsgType))
 	if err := CreateTable(db, KeysTestMsg{}, 1, 1); err != nil {
-		fmt.Printf("\t error occured while creating table: %s\n", err)
+		fmt.Printf("\t WARN: error occured while creating table: %s\n", err)
 	}
 }

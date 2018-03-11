@@ -11,10 +11,6 @@ if [ -z "`docker ps -q -f name=dynago_test`" ]; then
 fi
 #run tests everytime something changes
 while inotifywait -qq --exclude \..*\.sw[a-z] -e modify -r .; do
-	echo running test suite...
-	if [ -z "$1" ]; then
-		docker exec -t dynago_test go test -run "$1" ../../go/src/dynago
-	else
-		docker exec -t dynago_test go test ../../go/src/dynago
-	fi
+	echo "running test suite..."
+	docker exec -t dynago_test go test -run "$1" ../../go/src/dynago
 done

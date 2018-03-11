@@ -121,15 +121,14 @@ func createSecondaryIndex(rt reflect.Type, k key) (dynamodb.UpdateTableInput, er
 	}, nil
 }
 
-
 func getProjection(attr map[string]*dynamodb.AttributeValue) *dynamodb.Projection {
 	out := make([]*string, 0, len(attr))
 	for k := range attr {
 		out = append(out, aws.String(k))
 	}
-	if(len(out) == 0){
+	if len(out) == 0 {
 		return &dynamodb.Projection{
-			ProjectionType:   aws.String("KEYS_ONLY"),
+			ProjectionType: aws.String("KEYS_ONLY"),
 		}
 	}
 	return &dynamodb.Projection{
@@ -179,7 +178,7 @@ func getKeyAttr(rt reflect.Type, name string) (dynamodb.AttributeDefinition, err
 func deleteSecondaryIndex(rt reflect.Type, in string) (dynamodb.UpdateTableInput, error) {
 	tn := TableName(rt)
 	return dynamodb.UpdateTableInput{
-		TableName:            aws.String(tn),
+		TableName: aws.String(tn),
 		GlobalSecondaryIndexUpdates: []*dynamodb.GlobalSecondaryIndexUpdate{
 			&dynamodb.GlobalSecondaryIndexUpdate{
 				Delete: &dynamodb.DeleteGlobalSecondaryIndexAction{
@@ -201,7 +200,7 @@ func deleteSecondaryIndex(rt reflect.Type, in string) (dynamodb.UpdateTableInput
 //	dynamodb.DescribeTableInput{
 //		TableName: aws.String(tn),
 //	}
-	//YOUR CODE GOES HERE
+//YOUR CODE GOES HERE
 //	return key{}, false
 //}
 
@@ -239,7 +238,7 @@ func CreateKeyMakerByName(rt reflect.Type, in string, dto dynamodb.DescribeTable
 	}
 	pkn := ""
 	rkn := ""
-	for _, i := range dto.Table.GlobalSecondaryIndexes{
+	for _, i := range dto.Table.GlobalSecondaryIndexes {
 		ci := aws.StringValue(i.IndexName)
 		if ci == in {
 			//once we find the gblIndex with given name
@@ -248,7 +247,7 @@ func CreateKeyMakerByName(rt reflect.Type, in string, dto dynamodb.DescribeTable
 				//assign pkn and rkn
 				kt := aws.StringValue(a.KeyType)
 				kn := aws.StringValue(a.AttributeName)
-				if kt == "HASH"{
+				if kt == "HASH" {
 					pkn = kn
 					break
 				}
@@ -300,7 +299,7 @@ func CreateKeyMakerByName(rt reflect.Type, in string, dto dynamodb.DescribeTable
 			return priK, nil
 		}
 	}
-	
+
 	return func(ks ...interface{}) (key, error) {
 		if len(ks) < 2 {
 			es := fmt.Sprintf("dynaGo:%s KeyMaker: incorrect num args [%d]", t.Name(), len(ks))
