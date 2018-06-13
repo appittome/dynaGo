@@ -6,6 +6,7 @@ if [ -z "`docker ps -q -f name=dynago_test`" ]; then
 		-v `pwd`:/go/src/dynago \
 		-e AWS_ACCESS_KEY_ID=ABCD \
 		-e AWS_SECRET_ACCESS_KEY=123ABC \
+		-e DYNAGO_PREFIX=TEST_TEST \
 		-p 8000:8000 --name dynago_test --rm -d \
 		appittome/go_dynamo:latest
 fi

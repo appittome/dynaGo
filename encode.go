@@ -6,7 +6,9 @@ package dynaGo
 
 import (
 	"errors"
+	"os"
 	"reflect"
+	"sync"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
@@ -44,11 +46,32 @@ func Marshal(i interface{}) *dynamodb.PutItemInput {
 	return &dynamodb.PutItemInput{Item: e.item, TableName: &tn}
 }
 
+var (
+	prefix string
+	once   sync.Once
+)
+
+const (
+	dynaGoPrefix = "DYNAGO_PREFIX"
+)
+
+func tablePrefix() string {
+	once.Do(func() {
+		// if the prefex isn't set, just have a tantrum
+		if _, ok := os.LookupEnv(dynaGoPrefix); !ok {
+			panic("env DNYAGO_PREFIX not set - no valid table prefix provided in environment")
+		}
+		//fetch the value in ENVIRONMENT - whatever that ended up being.
+		prefix = os.Getenv(dynaGoPrefix) + "_"
+	})
+	return prefix
+}
+
 func TableName(t reflect.Type) string {
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
-	return t.Name() + "s"
+	return tablePrefix() + t.Name() + "s"
 }
 
 // Try to create a table if it doesn't already exist

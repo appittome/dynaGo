@@ -74,7 +74,6 @@ func exercise(t *testing.T, svc *dynamodb.DynamoDB, i interface{}) interface{} {
 	param := &dynamodb.ScanInput{
 		TableName: aws.String(TableName(reflect.TypeOf(i))),
 	}
-
 	resp, err := svc.Scan(param)
 	if err != nil {
 		t.Error(err)
